@@ -19,7 +19,7 @@ namespace EmployeeSchedule.Data.Entities
         public string Email { get; set;  }
         public string Password { get; set; }
         public string Possition { get; set; }
-        [ForeignKey("Id")]
+        [ForeignKey("CompanyId")]
         public Company Company { get; set; }
         public bool Administrator { get; set; }
     }

@@ -12,7 +12,7 @@ namespace EmployeeSchedule.Data.Interface
         public Task<T> GetById(int id);
         public Task<bool> Insert(T entity);
         public Task<bool> Update(T entity);
-        public Task<bool> Delete(T entity);
+        public Task<bool> Delete(int id);
 
     }
 }

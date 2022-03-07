@@ -39,7 +39,7 @@ namespace EmployeeSchedule.Repository.Implementation
 
         public async Task<Employee> GetById(int id)
         {
-            var employee = await _db.Employee.SingleOrDefaultAsync(e => e.Id == id);
+            var employee = await _db.Employee.Include(e => e.Company).SingleOrDefaultAsync(e => e.Id == id);
             return employee;
         }
 

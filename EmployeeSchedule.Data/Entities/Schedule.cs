@@ -13,7 +13,7 @@ namespace EmployeeSchedule.Data.Entities
         [Key]
         public int Id { get; set; }
         public DateTime Date { get; set; }
-        [ForeignKey("Id")]
+        [ForeignKey("EmployeeId")]
         public Employee Employee { get; set; }
         public string ShiftWork { get; set; }
         public DateTime CheckInTime { get; set; }
