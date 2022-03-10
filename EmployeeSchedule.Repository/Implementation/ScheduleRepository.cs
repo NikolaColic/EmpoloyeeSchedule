@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Repository.Implementation
 {
-    public class ScheduleRepository : IRepository<Schedule>
+    public class ScheduleRepository : IScheduleRepository
     {
         public readonly ApplicationDbContext _db;
         public ScheduleRepository(ApplicationDbContext db)
@@ -31,14 +31,28 @@ namespace EmployeeSchedule.Repository.Implementation
 
         public async Task<IEnumerable<Schedule>> GetAll()
         {
-            var schedules = await _db.Schedule.ToListAsync();
+            var schedules = await _db.Schedule
+                .Include(e => e.Employee)
+                .ToListAsync();
             return schedules;
         }
 
         public async Task<Schedule> GetById(int id)
         {
-            var schedule = await _db.Schedule.SingleOrDefaultAsync(e => e.Id == id);
+            var schedule = await _db.Schedule
+                .Include(e => e.Employee)
+                .SingleOrDefaultAsync(e => e.Id == id);
             return schedule;
+        }
+
+        public async Task<IEnumerable<Schedule>> GetScheduleForEmployee(int id)
+        {
+            var employeeSchedule = await _db.Schedule
+                .Include(e => e.Employee)
+                .Where(e => e.Employee.Id == id)
+                .ToListAsync();
+
+            return employeeSchedule;
         }
 
         public async Task<bool> Insert(Schedule entity)

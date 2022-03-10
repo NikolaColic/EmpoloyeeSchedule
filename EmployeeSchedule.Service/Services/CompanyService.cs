@@ -25,6 +25,8 @@ namespace EmployeeSchedule.Service.Services
                 }
 
                 var result = await _unitOfWork.Repository.Delete(entity);
+                await _unitOfWork.Commit();
+
                 return result;
             }
             catch (Exception ex)
@@ -67,6 +69,7 @@ namespace EmployeeSchedule.Service.Services
             try
             {
                 var result = await _unitOfWork.Repository.Insert(entity);
+                await _unitOfWork.Commit();
                 return result;
             }
             catch (Exception ex)
@@ -81,6 +84,7 @@ namespace EmployeeSchedule.Service.Services
             try
             {
                 var result = await _unitOfWork.Repository.Update(entity);
+                await _unitOfWork.Commit();
                 return result;
             }
             catch (Exception ex)

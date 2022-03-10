@@ -44,11 +44,11 @@ namespace EmployeeSchedule.API
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Connection")));
             services.AddScoped<IRepository<Company>, CompanyRepository>();
             services.AddScoped<IRepository<Employee>, EmployeeRepository>();
-            services.AddScoped<IRepository<Schedule>, ScheduleRepository>();
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IUnitOfWork<Company>, CompanyUnitOfWork>();
             services.AddScoped<IUnitOfWork<Employee>, EmployeeUnitOfWork>();
             services.AddScoped<IUnitOfWork<Schedule>, ScheduleUnitOfWork>();
-            services.AddScoped<IGenericService<Schedule>, ScheduleService>();
+            services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IGenericService<Employee>, EmployeeService>();
             services.AddScoped<IGenericService<Company>, CompanyService>();
         }

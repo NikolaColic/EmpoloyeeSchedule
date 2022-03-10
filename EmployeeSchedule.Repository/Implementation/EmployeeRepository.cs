@@ -34,8 +34,11 @@ namespace EmployeeSchedule.Repository.Implementation
             var employees = await _db.Employee
                 .Include(e => e.Company)
                 .ToListAsync();
+
             return employees;
         }
+
+       
 
         public async Task<Employee> GetById(int id)
         {
