@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
-using EmployeeSchedule.MVC.Models;
+using EmployeeSchedule.MVC.Models.Create;
+using EmployeeSchedule.MVC.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,12 @@ namespace EmployeeSchedule.MVC.Helper
     {
         public MapperProfile()
         {
-            CreateMap<Company, CompanyViewModel>();
-            CreateMap<CompanyViewModel, Company>();
-                
+            CreateMap<Company, CompanyCreate>();
+            CreateMap<CompanyCreate, Company>();
+            CreateMap<Employee, EmployeeCreate>();
+            CreateMap<EmployeeCreate, Employee>();
+            CreateMap<EmployeeViewModel, Employee>();
+            CreateMap<Employee, EmployeeViewModel>();
         }
     }
 }

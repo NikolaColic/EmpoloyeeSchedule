@@ -1,17 +1,18 @@
-﻿@model EmployeeSchedule.MVC.Models.Create.CompanyCreate 
+﻿@model EmployeeSchedule.MVC.Models.Create.CompanyCreate
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Index</h1>
+<h1>Edit</h1>
 
 <h4>Company</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="Company" method="post" asp-action="Index">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -33,12 +34,19 @@
                 <span asp-validation-for="Domain" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create company" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-            @if (@Model.Result) {
-            <div>
-                <p style="color:green">Sucess</p>
-            </div>
+            @if (@Model.Result)
+            {
+                <div>
+                    <p style="color:green">Sucess</p>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <p style="color:green">Error</p>
+                </div>
             }
         </form>
     </div>

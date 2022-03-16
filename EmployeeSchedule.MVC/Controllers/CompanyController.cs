@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
-using EmployeeSchedule.MVC.Models;
+using EmployeeSchedule.MVC.Models.Create;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,11 +23,11 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: CompanyController
         public ActionResult Index()
         {
-            return View(new CompanyViewModel());
+            return View(new CompanyCreate());
         }
 
         // GET: CompanyController/Details/5
-        public ActionResult Details(CompanyViewModel companyView)
+        public ActionResult Details(CompanyCreate companyView)
         {
             return View();
         }
@@ -41,32 +41,28 @@ namespace EmployeeSchedule.MVC.Controllers
         // POST: CompanyController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(CompanyViewModel companyView)
+        public async Task<ActionResult> Index(CompanyCreate companyCreate)
         {
-            var company = _mapper.Map<Company>(companyView);
-            companyView.Result = await _service.Insert(company);
-            return View(companyView);
+            var company = _mapper.Map<Company>(companyCreate);
+            companyCreate.Result = await _service.Insert(company);
+            return View(companyCreate);
         }
 
         // GET: CompanyController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return View();
+            var company = await _service.GetById(id);
+            return View(_mapper.Map<CompanyCreate>(company));
         }
 
         // POST: CompanyController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(int id, CompanyCreate companyCreate)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            var company = _mapper.Map<Company>(companyCreate);
+            companyCreate.Result = await _service.Update(company);
+            return View(companyCreate);
         }
 
         // GET: CompanyController/Delete/5
