@@ -33,13 +33,15 @@ namespace EmployeeSchedule.MVC.Controllers
         }
 
         // GET: EmployeeController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var employee = await _employeeService.GetById(id);
+            var employeeCreate = _mapper.Map<EmployeeCreate>(employee);
+            return View(employeeCreate);
         }
 
         // GET: EmployeeController/Create
-        public async Task<ActionResult> Create(bool? result = null)
+        public async Task<ActionResult> Create()
         {
             var companies = await _companyService.GetAll();
             var employeeCreate = new EmployeeCreate();
@@ -81,24 +83,17 @@ namespace EmployeeSchedule.MVC.Controllers
         }
 
         // GET: EmployeeController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
-        }
+            var result = await _employeeService.Delete(id);
 
-        // POST: EmployeeController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
+            if(!result)
             {
-                return RedirectToAction(nameof(Index));
+                TempData["DeleteError"] = true;
             }
-            catch
-            {
-                return View();
-            }
+
+            return RedirectToAction(nameof(Index));
         }
+        
     }
 }
