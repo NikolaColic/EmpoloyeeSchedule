@@ -5,6 +5,7 @@ using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,14 @@ namespace EmployeeSchedule.MVC.Controllers
         public async Task<ActionResult> Index()
         {
             var schedules = await _scheduleService.GetAll();
+            var employees = await _employeeService.GetAll();
+
+            ViewBag.EmployeeSelectList = employees.Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = e.Name + e.Surname
+            }).ToList();
+
             return View(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }
 
@@ -93,6 +102,17 @@ namespace EmployeeSchedule.MVC.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<ActionResult> Search(string text, string employeeId)
+        {
+            text ??= string.Empty;
+            var schedules = await _scheduleService.GetAll();
+
+            schedules = schedules.Where(e => (e.Notification.ToLower().Contains(text.ToLower()) || e.ShiftWork.ToLower().Contains(text.ToLower())) 
+            && (string.IsNullOrEmpty(employeeId) || e.Employee.Id.ToString() == employeeId)).ToList();
+
+            return PartialView(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }
 
     }

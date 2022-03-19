@@ -94,6 +94,43 @@ namespace EmployeeSchedule.MVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
+
+        public async Task<ActionResult> Search(string criteria)
+        {
+            var employees = await _employeeService.GetAll();
+
+            employees = employees.Where(e => e.Name.ToLower().Contains(criteria.ToLower()) || e.Surname.ToLower().Contains(criteria.ToLower())
+            || e.Adress.ToLower().Contains(criteria.ToLower()) || e.Number.ToLower().Contains(criteria.ToLower()) || e.Email.ToLower().Contains(criteria.ToLower())
+            || e.Possition.ToLower().Contains(criteria.ToLower())).ToList();
+
+            return PartialView(_mapper.Map<List<EmployeeViewModel>>(employees));
+        }
+
+        public async Task<ActionResult> Sort(string criteria)
+        {
+            var employees = await _employeeService.GetAll();
+
+            switch (criteria)
+            {
+                case "Name": 
+                    employees = employees.OrderBy(e => e.Name);
+                    break;
+                case "Surname":
+                    employees = employees.OrderBy(e => e.Surname);
+                    break;
+                case "Email":
+                    employees = employees.OrderBy(e => e.Email);
+                    break;
+                case "Adress":
+                    employees = employees.OrderBy(e => e.Adress);
+                    break;
+                case "Possition":
+                    employees = employees.OrderBy(e => e.Possition);
+                    break;
+            }
+
+            return PartialView(_mapper.Map<List<EmployeeViewModel>>(employees));
+        }
+
     }
 }

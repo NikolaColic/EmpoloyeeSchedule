@@ -2,3 +2,87 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+$('#employeeSearch').on('click', function (e) {
+    var text = $('#employeeSearchText').val();
+    Search(text);
+});
+
+$('#scheduleSearch').on('click', function (e) {
+    var text = $('#scheduleSearchText').val();
+    var employeeId = $('#scheduleEmployeeSearch').val();
+    SearchSchedule(text, employeeId);
+});
+
+$('#employeeSort').on('click', function (e) {
+    var text = $('#employeeSortCriteria').val();
+    Sort(text);
+});
+
+function Search(text) {
+    $.ajax({
+        type: 'GET',
+        url: '/Employee/Search',
+        data: { "criteria": text },
+        cache: false,
+        dataType: "html"
+        //success: function (result) {
+
+        //    $('#employeeResultInsert').html(result);
+        //}
+    })
+        .done(function (result) {
+
+            $('#employeeResultInsert').html(result);
+        })
+        .fail(function (xhr) {
+            console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+        })
+}
+
+function SearchSchedule(text,employeeId) {
+    $.ajax({
+        type: 'GET',
+        url: '/Schedule/Search',
+        data: { "text": text, "employeeId": employeeId },
+        cache: false,
+        dataType: "html"
+        //success: function (result) {
+
+        //    $('#employeeResultInsert').html(result);
+        //}
+    })
+        .done(function (result) {
+
+            $('#scheduleResultInsert').html(result);
+        })
+        .fail(function (xhr) {
+            console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+        })
+}
+
+$('#employeeSearch').on('click', function (e) {
+    var text = $('#employeeSearchText').val();
+    Search(text);
+});
+
+function Sort(criteria) {
+    $.ajax({
+        type: 'GET',
+        url: '/Employee/Sort',
+        data: { "criteria": criteria },
+        cache: false,
+        dataType: "html"
+        //success: function (result) {
+
+        //    $('#employeeResultInsert').html(result);
+        //}
+    })
+        .done(function (result) {
+
+            $('#employeeResultInsert').html(result);
+        })
+        .fail(function (xhr) {
+            console.log('error : ' + xhr.status + ' - ' + xhr.statusText + ' - ' + xhr.responseText);
+        })
+}
