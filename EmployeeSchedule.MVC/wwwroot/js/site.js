@@ -11,7 +11,8 @@ $('#employeeSearch').on('click', function (e) {
 $('#scheduleSearch').on('click', function (e) {
     var text = $('#scheduleSearchText').val();
     var employeeId = $('#scheduleEmployeeSearch').val();
-    SearchSchedule(text, employeeId);
+    var date = $('#scheduleSearchDate').val();
+    SearchSchedule(text, employeeId,date);
 });
 
 $('#employeeSort').on('click', function (e) {
@@ -40,11 +41,11 @@ function Search(text) {
         })
 }
 
-function SearchSchedule(text,employeeId) {
+function SearchSchedule(text,employeeId,date) {
     $.ajax({
         type: 'GET',
         url: '/Schedule/Search',
-        data: { "text": text, "employeeId": employeeId },
+        data: { "text": text, "employeeId": employeeId, "date": date },
         cache: false,
         dataType: "html"
         //success: function (result) {

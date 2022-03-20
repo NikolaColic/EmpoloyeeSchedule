@@ -3,11 +3,12 @@ using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Service.Services
 {
-    public class EmployeeService : IGenericService<Employee>
+    public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork<Employee> _unitOfWork;
         public EmployeeService(IUnitOfWork<Employee> unitOfWork)
@@ -75,6 +76,21 @@ namespace EmployeeSchedule.Service.Services
             {
                 Console.WriteLine(ex.StackTrace);
                 return false;
+            }
+        }
+
+        public async Task<Employee> Login(string email, string password)
+        {
+            try
+            {
+                var employees = await GetAll();
+                var loginEmployee = employees.SingleOrDefault(e => e.Email == email && e.Password == password);
+                return loginEmployee;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return null;
             }
         }
 

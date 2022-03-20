@@ -14,8 +14,8 @@ namespace EmployeeSchedule.API.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly IGenericService<Employee> _service;
-        public EmployeeController(IGenericService<Employee> service)
+        private readonly IEmployeeService _service;
+        public EmployeeController(IEmployeeService service)
         {
             _service = service;
         }

@@ -1,53 +1,46 @@
-﻿@model EmployeeSchedule.MVC.Models.Create.CompanyCreate 
+﻿@model IEnumerable<EmployeeSchedule.MVC.Models.Create.CompanyCreate>
 
-@{
-    ViewData["Title"] = "Index";
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdentificationNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Adress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Domain)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdentificationNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Adress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Domain)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+            </td>
+        </tr>
 }
-
-<h1>Index</h1>
-
-<h4>Company</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Company" method="post" asp-action="Index">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdentificationNumber" class="control-label"></label>
-                <input asp-for="IdentificationNumber" class="form-control" />
-                <span asp-validation-for="IdentificationNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Adress" class="control-label"></label>
-                <input asp-for="Adress" class="form-control" />
-                <span asp-validation-for="Adress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Domain" class="control-label"></label>
-                <input asp-for="Domain" class="form-control" />
-                <span asp-validation-for="Domain" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create company" class="btn btn-primary" />
-            </div>
-            @if (@Model.Result) {
-            <div>
-                <p style="color:green">Sucess</p>
-            </div>
-            }
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    </tbody>
+</table>

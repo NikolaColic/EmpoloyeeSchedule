@@ -21,21 +21,23 @@ namespace EmployeeSchedule.MVC.Controllers
             _mapper = mapper;
         }
         // GET: CompanyController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(new CompanyCreate());
+            var companies = await _service.GetAll();
+            return View(_mapper.Map<List<CompanyCreate>>(companies));
         }
 
         // GET: CompanyController/Details/5
-        public ActionResult Details(CompanyCreate companyView)
+        public async Task<ActionResult> Details(int id)
         {
-            return View();
+            var company = await _service.GetById(id);
+            return View(_mapper.Map<CompanyCreate>(company));
         }
 
         // GET: CompanyController/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new CompanyCreate());
         }
 
         // POST: CompanyController/Create
@@ -60,30 +62,11 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, CompanyCreate companyCreate)
         {
+            companyCreate.Id = id;
             var company = _mapper.Map<Company>(companyCreate);
             companyCreate.Result = await _service.Update(company);
             return View(companyCreate);
         }
 
-        // GET: CompanyController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CompanyController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

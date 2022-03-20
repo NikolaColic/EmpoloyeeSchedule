@@ -3,6 +3,7 @@ using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
+using EmployeeSchedule.MVC.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,10 +16,10 @@ namespace EmployeeSchedule.MVC.Controllers
     public class EmployeeController : Controller
     {
         private readonly IGenericService<Company> _companyService;
-        private readonly IGenericService<Employee> _employeeService;
+        private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
 
-        public EmployeeController(IGenericService<Employee> employeeService, IGenericService<Company> companyService, IMapper mapper)
+        public EmployeeController(IEmployeeService employeeService, IGenericService<Company> companyService, IMapper mapper)
         {
             _employeeService = employeeService;
             _companyService = companyService;
@@ -132,5 +133,27 @@ namespace EmployeeSchedule.MVC.Controllers
             return PartialView(_mapper.Map<List<EmployeeViewModel>>(employees));
         }
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> Login(EmployeeCreate employeeCreate)
+        {
+            var loginEmployee = await _employeeService.Login(employeeCreate.Email, employeeCreate.Password);
+            if(loginEmployee == null)
+            {
+                employeeCreate.Result = false;
+                return View(employeeCreate);
+            }
+            Storage.Instance.LoginEmployee = loginEmployee;
+            Storage.Instance.IsAdmin = loginEmployee.Administrator ? LoginCurrentRole.Admin : LoginCurrentRole.Employee;
+            return RedirectToAction(nameof(Index));
+        }
+
+        public ActionResult Login()
+        {
+            Storage.Instance.LoginEmployee = null;
+            Storage.Instance.IsAdmin = LoginCurrentRole.No;
+            return View(new EmployeeCreate());
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace EmployeeSchedule.MVC
             services.AddScoped<IUnitOfWork<Employee>, EmployeeUnitOfWork>();
             services.AddScoped<IUnitOfWork<Schedule>, ScheduleUnitOfWork>();
             services.AddScoped<IScheduleService, ScheduleService>();
-            services.AddScoped<IGenericService<Employee>, EmployeeService>();
+            services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IGenericService<Company>, CompanyService>();
         }
 
@@ -66,7 +66,7 @@ namespace EmployeeSchedule.MVC
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Employee}/{action=Login}/{id?}");
             });
         }
     }

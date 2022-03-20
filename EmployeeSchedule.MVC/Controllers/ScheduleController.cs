@@ -3,6 +3,7 @@ using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
+using EmployeeSchedule.MVC.Session;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,10 +17,10 @@ namespace EmployeeSchedule.MVC.Controllers
     public class ScheduleController : Controller
     {
         private readonly IScheduleService _scheduleService;
-        private readonly IGenericService<Employee> _employeeService;
+        private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
 
-        public ScheduleController(IScheduleService scheduleService, IGenericService<Employee> employeeService, IMapper mapper)
+        public ScheduleController(IScheduleService scheduleService, IEmployeeService employeeService, IMapper mapper)
         {
             _scheduleService = scheduleService;
             _employeeService = employeeService;
@@ -30,7 +31,16 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: ScheduleController
         public async Task<ActionResult> Index()
         {
-            var schedules = await _scheduleService.GetAll();
+            IEnumerable<Schedule> schedules;
+
+            if(Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+            {
+                schedules = await _scheduleService.GetAll();
+            }
+            else
+            {
+                schedules = await _scheduleService.GetScheduleForEmployee(Storage.Instance.LoginEmployee.Id);
+            }
             var employees = await _employeeService.GetAll();
 
             ViewBag.EmployeeSelectList = employees.Select(e => new SelectListItem
@@ -38,6 +48,15 @@ namespace EmployeeSchedule.MVC.Controllers
                 Value = e.Id.ToString(),
                 Text = e.Name + e.Surname
             }).ToList();
+
+            if(Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+            {
+                ViewBag.NumberOfRequests = schedules.Count(e => string.IsNullOrEmpty(e.ShiftWork));
+            }
+            else
+            {
+                ViewBag.CreateScheduleEnabled = !schedules.Any(e => e.Date.Date == DateTime.Now.Date && e.Employee.Id == Storage.Instance.LoginEmployee.Id);
+            }
 
             return View(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }
@@ -52,6 +71,20 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: ScheduleController/Create
         public async Task<ActionResult> Create()
         {
+            if(Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+            {
+                var schedule = new Schedule()
+                {
+                    Employee = Storage.Instance.LoginEmployee,
+                    CheckInTime = DateTime.Now,
+                    Date = DateTime.Now,
+                };
+
+                _ = await _scheduleService.Insert(schedule);
+                return RedirectToAction(nameof(Index));
+
+            }
+
             var employees = await _employeeService.GetAll();
             var employeeCreate = new ScheduleCreate();
             employeeCreate.EmployeeSelectList(employees);
@@ -104,13 +137,13 @@ namespace EmployeeSchedule.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<ActionResult> Search(string text, string employeeId)
+        public async Task<ActionResult> Search(string text, string employeeId, DateTime date)
         {
             text ??= string.Empty;
             var schedules = await _scheduleService.GetAll();
 
             schedules = schedules.Where(e => (e.Notification.ToLower().Contains(text.ToLower()) || e.ShiftWork.ToLower().Contains(text.ToLower())) 
-            && (string.IsNullOrEmpty(employeeId) || e.Employee.Id.ToString() == employeeId)).ToList();
+            && (string.IsNullOrEmpty(employeeId) || e.Employee.Id.ToString() == employeeId) && (date == DateTime.MinValue || e.Date.Date == date.Date)).ToList();
 
             return PartialView(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }

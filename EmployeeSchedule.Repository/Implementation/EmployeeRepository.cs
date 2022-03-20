@@ -25,6 +25,12 @@ namespace EmployeeSchedule.Repository.Implementation
                 throw new NullReferenceException("Entity not exist in database");
             }
 
+            var schedules = await _db.Schedule.Where(e => e.Employee.Id == entity.Id).ToListAsync();
+            if(schedules != null && schedules.Any())
+            {
+                schedules.ForEach(schedule => _db.Entry(schedule).State = EntityState.Deleted);
+            }
+
             _db.Entry(oldEntity).State = EntityState.Deleted;
             return true;
         }

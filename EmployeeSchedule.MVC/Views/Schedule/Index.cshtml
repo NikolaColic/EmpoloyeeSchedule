@@ -10,20 +10,30 @@
     <a asp-action="Create">Create New</a>
 </p>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <input type="text" class="form-control" id="scheduleSearchText" />
     </div>
-    <div class="col-sm-4">
-        <select id="scheduleEmployeeSearch"  asp-items="@ViewBag.EmployeeSelectList" class="form-control">
+    <div class="col-sm-3">
+        <select id="scheduleEmployeeSearch" asp-items="@ViewBag.EmployeeSelectList" class="form-control">
         </select>
+    </div>
+    <div class="col-sm-3">
+        <input type="date" class="form-control" id="scheduleSearchDate" />
     </div>
     <div class="col-sm-2">
         <input id="scheduleSearch" width="100" type="button" value="Search" class="btn-outline-primary" />
     </div>
     <div class="col-sm-2">
-        <a width="100" asp-controller="Schedule" asp-action="Index" formmethod="get"  t="Reset" class="btn btn-sm btn-outline-primary" />
+        <input width="100" type="button" value="Reset" class="btn-outline-primary" />
+        @*<a width="100" asp-controller="Schedule" asp-action="Index" formmethod="get"  t="Reset" class="btn btn-sm btn-outline-primary" />*@
     </div>
 </div>
+@if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
+{
+    <div>
+        <p>Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda </p>
+    </div>
+}
 <table class="table">
     <thead>
         <tr>
@@ -49,32 +59,38 @@
         </tr>
     </thead>
     <tbody id="scheduleResultInsert">
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Employee.Name) @Html.DisplayFor(model => item.Employee.Surname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShiftWork)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CheckInTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Late)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notification)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Employee.Name) @Html.DisplayFor(model => item.Employee.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShiftWork)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CheckInTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Late)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notification)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@if (ViewBag.CreateScheduleEnabled != null && ViewBag.CreateScheduleEnabled)
+{
+    <a asp-action="Create">Create schedule</a>
+}
