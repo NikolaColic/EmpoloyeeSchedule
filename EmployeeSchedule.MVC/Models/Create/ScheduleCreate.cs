@@ -12,10 +12,15 @@ namespace EmployeeSchedule.MVC.Models.Create
     public class ScheduleCreate : Schedule
     {
         [TempData]
-        public bool Result { get; set; }
+        public string ValidationMessage { get; set; } = string.Empty;
         public List<SelectListItem> EmployeesSelectList { get; set; }
         public ScheduleCreate()
         {
+            Employee = new Employee();
+        }
+        public ScheduleCreate(string validationMessage) 
+        {
+            ValidationMessage = validationMessage;
             Employee = new Employee();
         }
         public void EmployeeSelectList(IEnumerable<Employee> employees)

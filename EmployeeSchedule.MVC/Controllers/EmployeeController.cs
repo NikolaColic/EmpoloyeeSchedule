@@ -55,10 +55,23 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(EmployeeCreate employeeCreate)
         {
-            var employee = _mapper.Map<Employee>(employeeCreate);
-            employeeCreate.Result = await _employeeService.Insert(employee);
-            employeeCreate.CompanySelectList(await _companyService.GetAll());
-            return View(employeeCreate);
+            try
+            {
+                employeeCreate.CompanySelectList(await _companyService.GetAll());
+
+                if (!ModelState.IsValid)
+                {
+                    return View(employeeCreate);
+                }
+
+                var employee = _mapper.Map<Employee>(employeeCreate);
+                await _employeeService.Insert(employee);
+                return View(employeeCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new EmployeeCreate(ex.Message));
+            }
         }
 
         // GET: EmployeeController/Edit/5
@@ -76,11 +89,25 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, EmployeeCreate employeeCreate)
         {
-            employeeCreate.Id = id;
-            var employee = _mapper.Map<Employee>(employeeCreate);
-            employeeCreate.Result = await _employeeService.Update(employee);
-            employeeCreate.CompanySelectList(await _companyService.GetAll());
-            return View(employeeCreate);
+            try
+            {
+                employeeCreate.Id = id;
+
+                employeeCreate.CompanySelectList(await _companyService.GetAll());
+
+                if (!ModelState.IsValid)
+                {
+                    return View(employeeCreate);
+                }
+
+                var employee = _mapper.Map<Employee>(employeeCreate);
+                await _employeeService.Update(employee);
+                return View(employeeCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new EmployeeCreate(ex.Message));
+            }
         }
 
         // GET: EmployeeController/Delete/5
@@ -133,15 +160,13 @@ namespace EmployeeSchedule.MVC.Controllers
             return PartialView(_mapper.Map<List<EmployeeViewModel>>(employees));
         }
 
-
-
         [HttpPost]
         public async Task<ActionResult> Login(EmployeeCreate employeeCreate)
         {
             var loginEmployee = await _employeeService.Login(employeeCreate.Email, employeeCreate.Password);
             if(loginEmployee == null)
             {
-                employeeCreate.Result = false;
+                employeeCreate.ValidationMessage = "Employee doesn't exist";
                 return View(employeeCreate);
             }
             Storage.Instance.LoginEmployee = loginEmployee;

@@ -26,7 +26,7 @@ namespace EmployeeSchedule.Repository.Implementation
             }
 
             var schedules = await _db.Schedule.Where(e => e.Employee.Id == entity.Id).ToListAsync();
-            if(schedules != null && schedules.Any())
+            if (schedules != null && schedules.Any())
             {
                 schedules.ForEach(schedule => _db.Entry(schedule).State = EntityState.Deleted);
             }
@@ -44,7 +44,7 @@ namespace EmployeeSchedule.Repository.Implementation
             return employees;
         }
 
-       
+
 
         public async Task<Employee> GetById(int id)
         {
@@ -55,7 +55,7 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<bool> Insert(Employee entity)
         {
             var company = await _db.Company.SingleOrDefaultAsync(e => e.Id == entity.Company.Id);
-            if(company == null)
+            if (company == null)
             {
                 throw new NullReferenceException("Company not exist in database");
             }
@@ -63,7 +63,7 @@ namespace EmployeeSchedule.Repository.Implementation
             entity.Company = company;
 
             await _db.AddAsync(entity);
-            
+
             return true;
         }
 

@@ -71,24 +71,31 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: ScheduleController/Create
         public async Task<ActionResult> Create()
         {
-            if(Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+            try
             {
-                var schedule = new Schedule()
+                if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
                 {
-                    Employee = Storage.Instance.LoginEmployee,
-                    CheckInTime = DateTime.Now,
-                    Date = DateTime.Now,
-                };
+                    var schedule = new Schedule()
+                    {
+                        Employee = Storage.Instance.LoginEmployee,
+                        CheckInTime = DateTime.Now,
+                        Date = DateTime.Now,
+                    };
 
-                _ = await _scheduleService.Insert(schedule);
-                return RedirectToAction(nameof(Index));
+                    _ = await _scheduleService.Insert(schedule);
+                    return RedirectToAction(nameof(Index));
 
+                }
+
+                var employees = await _employeeService.GetAll();
+                var scheduleCreate = new ScheduleCreate();
+                scheduleCreate.EmployeeSelectList(employees);
+                return View(scheduleCreate);
             }
-
-            var employees = await _employeeService.GetAll();
-            var employeeCreate = new ScheduleCreate();
-            employeeCreate.EmployeeSelectList(employees);
-            return View(employeeCreate);
+            catch (Exception ex)
+            {
+                return View(new ScheduleCreate(ex.Message));
+            }
         }
 
         // POST: ScheduleController/Create
@@ -96,16 +103,37 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ScheduleCreate scheduleCreate)
         {
-            var schedule = _mapper.Map<Schedule>(scheduleCreate);
-            scheduleCreate.Result = await _scheduleService.Insert(schedule);
-            scheduleCreate.EmployeeSelectList(await _employeeService.GetAll());
-            return View(scheduleCreate);
+            try
+            {
+                scheduleCreate.EmployeeSelectList(await _employeeService.GetAll());
+
+                if (!ModelState.IsValid)
+                {
+                    return View(scheduleCreate);
+                }
+
+                var schedule = _mapper.Map<Schedule>(scheduleCreate);
+                await _scheduleService.Insert(schedule);
+                return View(scheduleCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new ScheduleCreate(ex.Message));
+            }
         }
 
         // GET: ScheduleController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
             var schedule = await _scheduleService.GetById(id);
+
+            if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+            {
+                schedule.CheckInTime = DateTime.Now;
+                _ = await _scheduleService.Update(schedule);
+                return RedirectToAction(nameof(Index));
+            }
+
             var scheduleCreate = _mapper.Map<ScheduleCreate>(schedule);
             var employees = await _employeeService.GetAll();
             scheduleCreate.EmployeeSelectList(employees);
@@ -117,11 +145,25 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, ScheduleCreate scheduleCreate)
         {
-            scheduleCreate.Id = id;
-            var employee = _mapper.Map<Schedule>(scheduleCreate);
-            scheduleCreate.Result = await _scheduleService.Update(employee);
-            scheduleCreate.EmployeeSelectList(await _employeeService.GetAll());
-            return View(scheduleCreate);
+            try
+            {
+                scheduleCreate.Id = id;
+
+                scheduleCreate.EmployeeSelectList(await _employeeService.GetAll());
+
+                if (!ModelState.IsValid)
+                {
+                    return View(scheduleCreate);
+                }
+
+                var employee = _mapper.Map<Schedule>(scheduleCreate);
+                await _scheduleService.Update(employee);
+                return View(scheduleCreate);
+            }
+            catch (Exception ex) 
+            {
+                return View(new ScheduleCreate(ex.Message));
+            }
         }
 
         // GET: ScheduleController/Delete/5

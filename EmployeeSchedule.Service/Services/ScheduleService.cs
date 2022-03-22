@@ -4,6 +4,7 @@ using EmployeeSchedule.Infrastructure.UnitOfWork.Interface;
 using EmployeeSchedule.Repository.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Service.Services
@@ -17,97 +18,65 @@ namespace EmployeeSchedule.Service.Services
         }
         public async Task<bool> Delete(int id)
         {
-            try
+            var entity = await GetById(id);
+            if (entity == null)
             {
-                var entity = await GetById(id);
-                if (entity == null)
-                {
-                    return false;
-                }
+                throw new Exception("Schedule doesn't exists");
+            }
 
-                var result = await _unitOfWork.Repository.Delete(entity);
-                await _unitOfWork.Commit();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+            var result = await _unitOfWork.Repository.Delete(entity);
+            await _unitOfWork.Commit();
+            return result;
         }
 
         public async Task<IEnumerable<Schedule>> GetAll()
         {
-            try
-            {
-                var entities = await _unitOfWork.Repository.GetAll();
-                return entities;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
+            var entities = await _unitOfWork.Repository.GetAll();
+            return entities;
         }
 
         public async Task<Schedule> GetById(int id)
         {
-            try
-            {
-                var entity = await _unitOfWork.Repository.GetById(id);
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
+            var entity = await _unitOfWork.Repository.GetById(id);
+            return entity;
         }
 
         public async Task<IEnumerable<Schedule>> GetScheduleForEmployee(int id)
         {
-            try
-            {
-                var repository = _unitOfWork.Repository as IScheduleRepository;
-                var entity = await repository.GetScheduleForEmployee(id);
-                await _unitOfWork.Commit();
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
+            var repository = _unitOfWork.Repository as IScheduleRepository;
+            var entity = await repository.GetScheduleForEmployee(id);
+            await _unitOfWork.Commit();
+            return entity;
         }
 
         public async Task<bool> Insert(Schedule entity)
         {
-            try
+            if (await ScheduleExist(entity))
             {
-                var result = await _unitOfWork.Repository.Insert(entity);
-                await _unitOfWork.Commit();
-                return result;
+                throw new Exception($"Schedule for employee {entity.Employee.Email} on date {entity.Date} exist");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+
+            var result = await _unitOfWork.Repository.Insert(entity);
+            await _unitOfWork.Commit();
+            return result;
         }
 
         public async Task<bool> Update(Schedule entity)
         {
-            try
+            if (await ScheduleExist(entity))
             {
-                var result = await _unitOfWork.Repository.Update(entity);
-                await _unitOfWork.Commit();
-                return result;
+                throw new Exception($"Schedule for employee {entity.Employee.Email} on date {entity.Date} exist");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+
+            var result = await _unitOfWork.Repository.Update(entity);
+            await _unitOfWork.Commit();
+            return result;
+        }
+
+        private async Task<bool> ScheduleExist(Schedule schedule)
+        {
+            var schedules = await GetAll();
+            return schedules.Any(e => e.Employee.Id == schedule.Employee.Id && e.Date.Date == schedule.Date.Date && e.Id != schedule.Id);
         }
     }
 }

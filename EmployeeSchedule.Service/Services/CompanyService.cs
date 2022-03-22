@@ -3,6 +3,7 @@ using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Interface;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Service.Services
@@ -16,82 +17,58 @@ namespace EmployeeSchedule.Service.Services
         }
         public async Task<bool> Delete(int id)
         {
-            try
+            var entity = await GetById(id);
+            if (entity == null)
             {
-                var entity = await GetById(id);
-                if (entity == null)
-                {
-                    return false;
-                }
-
-                var result = await _unitOfWork.Repository.Delete(entity);
-                await _unitOfWork.Commit();
-
-                return result;
+                throw new Exception("Company doesn't exists");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+
+            var result = await _unitOfWork.Repository.Delete(entity);
+            await _unitOfWork.Commit();
+
+            return result;
         }
 
         public async Task<IEnumerable<Company>> GetAll()
         {
-            try
-            {
-                var entities = await _unitOfWork.Repository.GetAll();
-                return entities;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
+            var entities = await _unitOfWork.Repository.GetAll();
+            return entities;
         }
 
         public async Task<Company> GetById(int id)
         {
-            try
-            {
-                var entity = await _unitOfWork.Repository.GetById(id);
-                return entity;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
+            var entity = await _unitOfWork.Repository.GetById(id);
+            return entity;
         }
 
         public async Task<bool> Insert(Company entity)
         {
-            try
+            if (await CompanyExists(entity))
             {
-                var result = await _unitOfWork.Repository.Insert(entity);
-                await _unitOfWork.Commit();
-                return result;
+                throw new Exception("Company exist");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+
+            var result = await _unitOfWork.Repository.Insert(entity);
+            await _unitOfWork.Commit();
+            return result;
         }
 
         public async Task<bool> Update(Company entity)
         {
-            try
+            if (await CompanyExists(entity))
             {
-                var result = await _unitOfWork.Repository.Update(entity);
-                await _unitOfWork.Commit();
-                return result;
+                throw new Exception("Company exist");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return false;
-            }
+
+            var result = await _unitOfWork.Repository.Update(entity);
+            await _unitOfWork.Commit();
+            return result;
+        }
+
+        private async Task<bool> CompanyExists(Company company)
+        {
+            var companies = await GetAll();
+            return companies.Any(e => (e.IdentificationNumber == company.IdentificationNumber || e.Adress == company.Adress) && e.Id != company.Id);
         }
     }
 }

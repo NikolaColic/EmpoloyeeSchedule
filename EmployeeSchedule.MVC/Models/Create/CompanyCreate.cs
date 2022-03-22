@@ -10,6 +10,14 @@ namespace EmployeeSchedule.MVC.Models.Create
     public class CompanyCreate : Company
     {
         [TempData]
-        public bool Result { get; set; } = default;
+        public string ValidationMessage { get; set; } = string.Empty;
+        public CompanyCreate()
+        {
+                
+        }
+        public CompanyCreate(string validationMessage)
+        {
+            ValidationMessage = validationMessage;
+        }
     }
 }

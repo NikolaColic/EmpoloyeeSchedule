@@ -30,8 +30,15 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: CompanyController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var company = await _service.GetById(id);
-            return View(_mapper.Map<CompanyCreate>(company));
+            try
+            {
+                var company = await _service.GetById(id);
+                return View(_mapper.Map<CompanyCreate>(company));
+            }
+            catch (Exception ex)
+            {
+                return View(new CompanyCreate(ex.Message));
+            }
         }
 
         // GET: CompanyController/Create
@@ -43,11 +50,23 @@ namespace EmployeeSchedule.MVC.Controllers
         // POST: CompanyController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Index(CompanyCreate companyCreate)
+        public async Task<ActionResult> Create(CompanyCreate companyCreate)
         {
-            var company = _mapper.Map<Company>(companyCreate);
-            companyCreate.Result = await _service.Insert(company);
-            return View(companyCreate);
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(companyCreate);
+                }
+
+                var company = _mapper.Map<Company>(companyCreate);
+                await _service.Insert(company);
+                return View(companyCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new CompanyCreate(ex.Message));
+            }
         }
 
         // GET: CompanyController/Edit/5
@@ -62,10 +81,23 @@ namespace EmployeeSchedule.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, CompanyCreate companyCreate)
         {
-            companyCreate.Id = id;
-            var company = _mapper.Map<Company>(companyCreate);
-            companyCreate.Result = await _service.Update(company);
-            return View(companyCreate);
+            try
+            {
+                companyCreate.Id = id;
+
+                if (!ModelState.IsValid)
+                {
+                    return View(companyCreate);
+                }
+
+                var company = _mapper.Map<Company>(companyCreate);
+                await _service.Update(company);
+                return View(companyCreate);
+            }
+            catch (Exception  ex)
+            {
+                return View(new CompanyCreate(ex.Message));
+            }
         }
 
     }
