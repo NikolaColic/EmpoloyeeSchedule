@@ -20,11 +20,6 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<bool> Delete(Company entity)
         {
             var oldEntity = await GetById(entity.Id);
-            if (oldEntity == null)
-            {
-                throw new NullReferenceException("Entity not exist in database");
-            }
-
             _db.Entry(oldEntity).State = EntityState.Deleted;
             return true;
         }
@@ -38,6 +33,12 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<Company> GetById(int id)
         {
             var company = await _db.Company.SingleOrDefaultAsync(e => e.Id == id);
+
+            if(company == null)
+            {
+                throw new NullReferenceException("Company doesn't exist");
+            }
+
             return company;
         }
 
@@ -50,11 +51,6 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<bool> Update(Company entity)
         {
             var oldEntity = await GetById(entity.Id);
-            if (oldEntity == null)
-            {
-                throw new NullReferenceException("Entity not exist in database");
-            }
-
             _db.Entry(oldEntity).State = EntityState.Detached;
             _db.Update(entity);
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.MVC.Models.Create;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,17 @@ namespace EmployeeSchedule.MVC.Controllers
     {
         private readonly IGenericService<Company> _service;
         private readonly IMapper _mapper;
-        public CompanyController(IGenericService<Company> service, IMapper mapper)
+        private readonly IWebApiService _apiService;
+        public CompanyController(IGenericService<Company> service, IMapper mapper, IWebApiService apiService)
         {
             _service = service;
             _mapper = mapper;
+            _apiService = apiService;
         }
         // GET: CompanyController
         public async Task<ActionResult> Index()
         {
-            var companies = await _service.GetAll();
+            var companies = await _apiService.GetCompanies();
             return View(_mapper.Map<List<CompanyCreate>>(companies));
         }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
 using EmployeeSchedule.MVC.Session;
@@ -18,12 +19,14 @@ namespace EmployeeSchedule.MVC.Controllers
         private readonly IGenericService<Company> _companyService;
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
+        private readonly IWebApiService _apiService;
 
-        public EmployeeController(IEmployeeService employeeService, IGenericService<Company> companyService, IMapper mapper)
+        public EmployeeController(IEmployeeService employeeService, IGenericService<Company> companyService, IMapper mapper, IWebApiService apiService)
         {
             _employeeService = employeeService;
             _companyService = companyService;
             _mapper = mapper;
+            _apiService = apiService;
         }
 
         // GET: EmployeeController
@@ -36,9 +39,16 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: EmployeeController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var employee = await _employeeService.GetById(id);
-            var employeeCreate = _mapper.Map<EmployeeCreate>(employee);
-            return View(employeeCreate);
+            try
+            {
+                var employee = await _employeeService.GetById(id);
+                var employeeCreate = _mapper.Map<EmployeeCreate>(employee);
+                return View(employeeCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new EmployeeCreate(ex.Message));
+            }
         }
 
         // GET: EmployeeController/Create
@@ -113,7 +123,7 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: EmployeeController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var result = await _employeeService.Delete(id);
+            var result = await _apiService.DeleteEmployee(id);
 
             if(!result)
             {

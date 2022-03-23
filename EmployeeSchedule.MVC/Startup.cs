@@ -1,12 +1,14 @@
 using EmployeeSchedule.Data;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Implementation;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Interface;
 using EmployeeSchedule.MVC.Extensions;
 using EmployeeSchedule.Repository.Implementation;
 using EmployeeSchedule.Repository.Interface;
 using EmployeeSchedule.Service.Services;
+using EmployeeSchedule.Service.Services.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,7 @@ namespace EmployeeSchedule.MVC
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IGenericService<Company>, CompanyService>();
+            services.AddScoped<IWebApiService, WebApiService> ();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

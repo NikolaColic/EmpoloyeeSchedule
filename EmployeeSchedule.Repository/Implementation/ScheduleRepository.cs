@@ -20,11 +20,6 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<bool> Delete(Schedule entity)
         {
             var oldEntity = await GetById(entity.Id);
-            if (oldEntity == null)
-            {
-                throw new NullReferenceException("Entity not exist in database");
-            }
-
             _db.Entry(oldEntity).State = EntityState.Deleted;
             return true;
         }
@@ -42,6 +37,12 @@ namespace EmployeeSchedule.Repository.Implementation
             var schedule = await _db.Schedule
                 .Include(e => e.Employee)
                 .SingleOrDefaultAsync(e => e.Id == id);
+
+            if (schedule == null)
+            {
+                throw new NullReferenceException("Schedule doesn't exist");
+            }
+
             return schedule;
         }
 
@@ -60,7 +61,7 @@ namespace EmployeeSchedule.Repository.Implementation
             var employee = await _db.Employee.SingleOrDefaultAsync(e => e.Id == entity.Employee.Id);
             if (employee == null)
             {
-                throw new NullReferenceException("Employee not exist in database");
+                throw new NullReferenceException("Employee doesn't exists");
             }
 
             entity.Employee = employee;
@@ -73,15 +74,11 @@ namespace EmployeeSchedule.Repository.Implementation
         public async Task<bool> Update(Schedule entity)
         {
             var oldEntity = await GetById(entity.Id);
-            if (oldEntity == null)
-            {
-                throw new NullReferenceException("Entity not exist in database");
-            }
 
             var employee = await _db.Employee.SingleOrDefaultAsync(e => e.Id == entity.Employee.Id);
             if (employee == null)
             {
-                throw new NullReferenceException("Employee not exist in database");
+                throw new NullReferenceException("Employee doesn't exists");
             }
 
             entity.Employee = employee;

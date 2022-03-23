@@ -34,54 +34,58 @@ namespace EmployeeSchedule.API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Company>> Get(int id)
         {
-            var result = await _service.GetById(id);
-
-            if (result == null)
+            try
+            {
+                var result = await _service.GetById(id);
+                return Ok(result);
+            }
+            catch (Exception)
             {
                 return NotFound();
             }
-
-            return Ok(result);
         }
 
         [HttpPost]
         public async Task<ActionResult<bool>> Post([FromBody] Company entity)
         {
-            var result = await _service.Insert(entity);
-
-            if (!result)
+            try
             {
-                return BadRequest();
+                await _service.Insert(entity);
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<bool>> Put(int id, [FromBody] Company entity)
         {
-            entity.Id = id;
-            var result = await _service.Update(entity);
-
-            if (!result)
+            try
             {
-                return BadRequest();
+                entity.Id = id;
+                await _service.Update(entity);
+                return Ok();
             }
-
-            return Ok();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(int id)
         {
-            var result = await _service.Delete(id);
-
-            if (!result)
+            try
             {
-                return BadRequest();
+                await _service.Delete(id);
+                return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

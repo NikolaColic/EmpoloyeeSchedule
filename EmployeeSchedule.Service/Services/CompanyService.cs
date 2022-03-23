@@ -18,11 +18,6 @@ namespace EmployeeSchedule.Service.Services
         public async Task<bool> Delete(int id)
         {
             var entity = await GetById(id);
-            if (entity == null)
-            {
-                throw new Exception("Company doesn't exists");
-            }
-
             var result = await _unitOfWork.Repository.Delete(entity);
             await _unitOfWork.Commit();
 

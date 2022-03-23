@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
 using EmployeeSchedule.MVC.Session;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -19,12 +19,14 @@ namespace EmployeeSchedule.MVC.Controllers
         private readonly IScheduleService _scheduleService;
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
+        private readonly IWebApiService _apiService;
 
-        public ScheduleController(IScheduleService scheduleService, IEmployeeService employeeService, IMapper mapper)
+        public ScheduleController(IScheduleService scheduleService, IEmployeeService employeeService, IMapper mapper, IWebApiService apiService)
         {
             _scheduleService = scheduleService;
             _employeeService = employeeService;
             _mapper = mapper;
+            _apiService = apiService;
         }
 
 
@@ -41,6 +43,7 @@ namespace EmployeeSchedule.MVC.Controllers
             {
                 schedules = await _scheduleService.GetScheduleForEmployee(Storage.Instance.LoginEmployee.Id);
             }
+
             var employees = await _employeeService.GetAll();
 
             ViewBag.EmployeeSelectList = employees.Select(e => new SelectListItem
@@ -64,7 +67,7 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: ScheduleController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var schedule = await _scheduleService.GetById(id);
+            var schedule = await _apiService.GetScheduleById(id);
             return View(_mapper.Map<ScheduleCreate>(schedule));
         }
 
@@ -125,19 +128,26 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: ScheduleController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var schedule = await _scheduleService.GetById(id);
-
-            if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+            try
             {
-                schedule.CheckInTime = DateTime.Now;
-                _ = await _scheduleService.Update(schedule);
-                return RedirectToAction(nameof(Index));
-            }
+                var schedule = await _scheduleService.GetById(id);
 
-            var scheduleCreate = _mapper.Map<ScheduleCreate>(schedule);
-            var employees = await _employeeService.GetAll();
-            scheduleCreate.EmployeeSelectList(employees);
-            return View(scheduleCreate);
+                if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+                {
+                    schedule.CheckInTime = DateTime.Now;
+                    _ = await _scheduleService.Update(schedule);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                var scheduleCreate = _mapper.Map<ScheduleCreate>(schedule);
+                var employees = await _employeeService.GetAll();
+                scheduleCreate.EmployeeSelectList(employees);
+                return View(scheduleCreate);
+            }
+            catch (Exception ex)
+            {
+                return View(new ScheduleCreate(ex.Message));
+            }
         }
 
         // POST: ScheduleController/Edit/5
@@ -157,7 +167,7 @@ namespace EmployeeSchedule.MVC.Controllers
                 }
 
                 var employee = _mapper.Map<Schedule>(scheduleCreate);
-                await _scheduleService.Update(employee);
+                await _apiService.UpdateSchedule(employee);
                 return View(scheduleCreate);
             }
             catch (Exception ex) 
