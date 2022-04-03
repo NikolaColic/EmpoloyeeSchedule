@@ -51,6 +51,14 @@ namespace EmployeeSchedule.Service.Services
                 throw new Exception($"Schedule for employee {entity.Employee.Email} on date {entity.Date} exist");
             }
 
+            if(Storage.Storage.Instance.Holidays != null && Storage.Storage.Instance.Holidays.Any())
+            {
+                if(Storage.Storage.Instance.Holidays.Any(e => e.Date.Date == entity.Date.Date))
+                {
+                    throw new Exception("On this day is national holiday");
+                }
+            }
+
             var result = await _unitOfWork.Repository.Insert(entity);
             await _unitOfWork.Commit();
             return result;
@@ -61,6 +69,14 @@ namespace EmployeeSchedule.Service.Services
             if (await ScheduleExist(entity))
             {
                 throw new Exception($"Schedule for employee {entity.Employee.Email} on date {entity.Date} exist");
+            }
+
+            if (Storage.Storage.Instance.Holidays != null && Storage.Storage.Instance.Holidays.Any())
+            {
+                if (Storage.Storage.Instance.Holidays.Any(e => e.Date.Date == entity.Date.Date))
+                {
+                    throw new Exception("On this day is national holiday");
+                }
             }
 
             var result = await _unitOfWork.Repository.Update(entity);

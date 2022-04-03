@@ -30,5 +30,7 @@ namespace EmployeeSchedule.Data.Entities
         [ValidateNever]
         public Company Company { get; set; }
         public bool Administrator { get; set; }
+        [Display(Name="City")]
+        public string CityName { get; set; }
     }
 }

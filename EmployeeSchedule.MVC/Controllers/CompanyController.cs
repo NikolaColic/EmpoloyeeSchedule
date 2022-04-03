@@ -26,7 +26,7 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: CompanyController
         public async Task<ActionResult> Index()
         {
-            var companies = await _apiService.GetCompanies();
+            var companies = await _apiService.GetHolidays();
             return View(_mapper.Map<List<CompanyCreate>>(companies));
         }
 
@@ -64,6 +64,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var company = _mapper.Map<Company>(companyCreate);
                 await _service.Insert(company);
+                companyCreate.ValidationMessage = "Success";
                 return View(companyCreate);
             }
             catch (Exception ex)
@@ -95,6 +96,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var company = _mapper.Map<Company>(companyCreate);
                 await _service.Update(company);
+                companyCreate.ValidationMessage = "Success";
                 return View(companyCreate);
             }
             catch (Exception  ex)

@@ -57,6 +57,8 @@ namespace EmployeeSchedule.MVC.Controllers
             var companies = await _companyService.GetAll();
             var employeeCreate = new EmployeeCreate();
             employeeCreate.CompanySelectList(companies);
+            var cities = await _apiService.GetCities();
+            employeeCreate.CitySelectList(cities);
             return View(employeeCreate);
         }
 
@@ -68,7 +70,7 @@ namespace EmployeeSchedule.MVC.Controllers
             try
             {
                 employeeCreate.CompanySelectList(await _companyService.GetAll());
-
+                employeeCreate.CitySelectList(await _apiService.GetCities());
                 if (!ModelState.IsValid)
                 {
                     return View(employeeCreate);
@@ -76,6 +78,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var employee = _mapper.Map<Employee>(employeeCreate);
                 await _employeeService.Insert(employee);
+                employeeCreate.ValidationMessage = "Success";
                 return View(employeeCreate);
             }
             catch (Exception ex)
@@ -90,6 +93,8 @@ namespace EmployeeSchedule.MVC.Controllers
             var employee = await _employeeService.GetById(id);
             var employeeCreate = _mapper.Map<EmployeeCreate>(employee);
             var companies = await _companyService.GetAll();
+            var cities = await _apiService.GetCities();
+            employeeCreate.CitySelectList(cities);
             employeeCreate.CompanySelectList(companies);
             return View(employeeCreate);
         }
@@ -102,8 +107,8 @@ namespace EmployeeSchedule.MVC.Controllers
             try
             {
                 employeeCreate.Id = id;
-
                 employeeCreate.CompanySelectList(await _companyService.GetAll());
+                employeeCreate.CitySelectList(await _apiService.GetCities());
 
                 if (!ModelState.IsValid)
                 {
@@ -112,6 +117,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var employee = _mapper.Map<Employee>(employeeCreate);
                 await _employeeService.Update(employee);
+                employeeCreate.ValidationMessage = "Success";
                 return View(employeeCreate);
             }
             catch (Exception ex)

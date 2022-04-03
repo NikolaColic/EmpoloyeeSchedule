@@ -65,7 +65,6 @@ namespace EmployeeSchedule.Repository.Implementation
             }
 
             entity.Employee = employee;
-
             await _db.AddAsync(entity);
 
             return true;

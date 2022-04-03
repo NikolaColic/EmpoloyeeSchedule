@@ -1,5 +1,6 @@
 ﻿
 using EmployeeSchedule.Data.Entities;
+using EmployeeSchedule.Data.Entities.ApiEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace EmployeeSchedule.Data.Interface.WebApi
         Task<IEnumerable<Company>> GetCompanies();
         Task<Schedule> GetScheduleById(int id);
         Task<bool> UpdateSchedule(Schedule schedule);
+        Task<List<Holiday>> GetHolidays();
+        Task<List<City>> GetCities();
     }
 }

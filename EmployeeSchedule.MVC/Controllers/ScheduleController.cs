@@ -43,7 +43,7 @@ namespace EmployeeSchedule.MVC.Controllers
             {
                 schedules = await _scheduleService.GetScheduleForEmployee(Storage.Instance.LoginEmployee.Id);
             }
-
+            schedules.OrderBy(e => e.Date);
             var employees = await _employeeService.GetAll();
 
             ViewBag.EmployeeSelectList = employees.Select(e => new SelectListItem
@@ -51,6 +51,8 @@ namespace EmployeeSchedule.MVC.Controllers
                 Value = e.Id.ToString(),
                 Text = e.Name + e.Surname
             }).ToList();
+
+            ViewBag.Holidays = await _apiService.GetHolidays();
 
             if(Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
             {
@@ -83,6 +85,7 @@ namespace EmployeeSchedule.MVC.Controllers
                         Employee = Storage.Instance.LoginEmployee,
                         CheckInTime = DateTime.Now,
                         Date = DateTime.Now,
+                        ShiftWork = string.Empty
                     };
 
                     _ = await _scheduleService.Insert(schedule);
@@ -117,6 +120,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var schedule = _mapper.Map<Schedule>(scheduleCreate);
                 await _scheduleService.Insert(schedule);
+                scheduleCreate.ValidationMessage = "Success";
                 return View(scheduleCreate);
             }
             catch (Exception ex)
@@ -168,6 +172,7 @@ namespace EmployeeSchedule.MVC.Controllers
 
                 var employee = _mapper.Map<Schedule>(scheduleCreate);
                 await _apiService.UpdateSchedule(employee);
+                scheduleCreate.ValidationMessage = "Success";
                 return View(scheduleCreate);
             }
             catch (Exception ex) 

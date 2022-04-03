@@ -1,4 +1,5 @@
 ﻿using EmployeeSchedule.Data.Entities;
+using EmployeeSchedule.Data.Entities.ApiEntities;
 using EmployeeSchedule.Data.Interface.WebApi;
 using Newtonsoft.Json;
 using System;
@@ -36,6 +37,79 @@ namespace EmployeeSchedule.Service.Services.WebApi
                 var content = await response.Content.ReadAsStringAsync();
                 var companies = JsonConvert.DeserializeObject<List<Company>>(content);
                 return companies;
+            }
+        }
+
+        public async Task<List<Holiday>> GetHolidays()
+        {
+            if(Storage.Storage.Instance.Holidays != null && Storage.Storage.Instance.Holidays.Any())
+            {
+                return Storage.Storage.Instance.Holidays;
+            }
+
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri("https://public-holiday.p.rapidapi.com/2022/RS"),
+                    Headers =
+                {
+                    { "X-RapidAPI-Host", "public-holiday.p.rapidapi.com" },
+                    { "X-RapidAPI-Key", "d53ae06313mshdb7909300b5773bp130cc4jsnea6a1f4797c1" },
+                },
+                };
+
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    var holidays = JsonConvert.DeserializeObject<List<Holiday>>(content);
+
+                    if(holidays == null || !holidays.Any()) 
+                    {
+                        return null;    
+                    }
+
+                    Storage.Storage.Instance.Holidays = holidays;
+                    return holidays;
+                }
+            }
+        }
+
+        public async Task<List<City>> GetCities()
+        {
+            if (Storage.Storage.Instance.Cities != null && Storage.Storage.Instance.Cities.Any())
+            {
+                return Storage.Storage.Instance.Cities;
+            }
+             
+            using (var client = new HttpClient())
+            {
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri("https://spott.p.rapidapi.com/places?skip=0&country=RS&limit=100"),
+                    Headers =
+                            {
+                                { "X-RapidAPI-Host", "spott.p.rapidapi.com" },
+                                { "X-RapidAPI-Key", "d53ae06313mshdb7909300b5773bp130cc4jsnea6a1f4797c1" },
+                            },
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    var cities = JsonConvert.DeserializeObject<List<City>>(content);
+
+                    if (cities == null || !cities.Any())
+                    {
+                        return null;
+                    }
+
+                    Storage.Storage.Instance.Cities = cities;
+                    return cities;
+                }
             }
         }
 

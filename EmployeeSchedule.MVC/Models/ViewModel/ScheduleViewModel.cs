@@ -1,4 +1,5 @@
 ﻿using EmployeeSchedule.Data.Entities;
+using EmployeeSchedule.Data.Entities.ApiEntities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace EmployeeSchedule.MVC.Models.ViewModel
     {
         public List<SelectListItem> EmployeesSelectList { get; set; }
         public CheckInStatus CheckInStatus { get; set; }
+        public List<Holiday> Holidays { get; set; }
         public ScheduleViewModel()
         {
             if(Date.Date < DateTime.Now.Date)

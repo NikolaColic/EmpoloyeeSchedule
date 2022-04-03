@@ -1,4 +1,5 @@
 ﻿using EmployeeSchedule.Data.Entities;
+using EmployeeSchedule.Data.Entities.ApiEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -13,6 +14,7 @@ namespace EmployeeSchedule.MVC.Models.Create
         [TempData]
         public string ValidationMessage { get; set; } = string.Empty;
         public List<SelectListItem> CompaniesSelectList { get; set; }
+        public List<SelectListItem> CitiesSelectList { get; set; }
         public EmployeeCreate()
         {
             Company = new Company();
@@ -27,6 +29,15 @@ namespace EmployeeSchedule.MVC.Models.Create
             CompaniesSelectList = companies.Select(e => new SelectListItem
             {
                 Value = e.Id.ToString(),
+                Text = e.Name
+            }).ToList();
+        }
+
+        public void CitySelectList(IEnumerable<City> cities)
+        {
+            CitiesSelectList = cities.Select(e => new SelectListItem
+            {
+                Value = e.Name.ToString(),
                 Text = e.Name
             }).ToList();
         }

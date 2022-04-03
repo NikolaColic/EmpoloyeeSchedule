@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-controller="Company" method="post" asp-action="Index">
+        <form asp-controller="Company" method="post" asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -35,10 +35,10 @@
             <div class="form-group">
                 <input type="submit" value="Create company" class="btn btn-primary" />
             </div>
-            @if (@Model.ValidationMessage == "") {
-            <div>
-                <p style="color:green">Sucess</p>
-            </div>
+            @if (!string.IsNullOrEmpty(@Model.ValidationMessage)) {
+                <div>
+                    <p style="color:green">@Model.ValidationMessage</p>
+                </div>
             }
         </form>
     </div>
