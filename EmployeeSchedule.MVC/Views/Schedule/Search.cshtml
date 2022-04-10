@@ -1,12 +1,17 @@
 ﻿@model IEnumerable<EmployeeSchedule.MVC.Models.ViewModel.ScheduleViewModel>
+@using EmployeeSchedule.MVC.Models.ViewModel
+@using EmployeeSchedule.MVC.Session
 
 
 @foreach (var item in Model)
 {
     <tr>
-        <td>
-            @Html.DisplayFor(model => item.Employee.Name) @Html.DisplayFor(model => item.Employee.Surname)
-        </td>
+        @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+        {
+            <td>
+                @Html.DisplayFor(model => item.Employee.Name)  @Html.DisplayFor(model => item.Employee.Surname)
+            </td>
+        }
         <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
@@ -17,15 +22,33 @@
             @Html.DisplayFor(modelItem => item.CheckInTime)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Late)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Notification)
         </td>
         <td>
-            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            @if (item.CheckInStatus == CheckInStatus.NotRequired)
+            {
+                <h6>Not required</h6>
+            }
+            else if (item.CheckInStatus == CheckInStatus.Late)
+            {
+                <h6>Late</h6>
+            }
+            else if (item.CheckInStatus == CheckInStatus.OnTime)
+            {
+                <h6>On time</h6>
+            }
+            else
+            {
+                <a class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            }
+        </td>
+        <td>
+            <a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+            @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+            {
+                <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            }
         </td>
     </tr>
 }

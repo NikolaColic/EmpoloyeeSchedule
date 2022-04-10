@@ -8,144 +8,148 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
 {
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
+
 }
-<div class="row">
-    <div class="col-sm-3">
-        <input type="text" class="form-control" id="scheduleSearchText" />
+<div class="base">
+    <div class="row">
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="scheduleSearchText" />
+        </div>
+        @if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+        {
+            <div class="col-sm-4">
+                <select id="scheduleEmployeeSearch" asp-items="@ViewBag.EmployeeSelectList" class="form-control">
+                </select>
+            </div>
+        }
+        <div class="col-sm-4">
+            <input type="date" class="form-control" id="scheduleSearchDate" />
+        </div>
     </div>
-    @if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+    <div class="row buttons-index">
+        <div class="col-sm-4">
+            <input id="scheduleSearch" width="100" type="button" value="Search" class="btn btn-outline-info" />
+        </div>
+        <div class="col-sm-4">
+            <input width="100" type="button" value="Reset" class="btn btn-outline-info" />
+        </div>
+    </div>
+    @if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
     {
-        <div class="col-sm-3">
-            <select id="scheduleEmployeeSearch" asp-items="@ViewBag.EmployeeSelectList" class="form-control">
-            </select>
+        <div>
+            <p>Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda </p>
         </div>
     }
-    <div class="col-sm-3">
-        <input type="date" class="form-control" id="scheduleSearchDate" />
-    </div>
-    <div class="col-sm-2">
-        <input id="scheduleSearch" width="100" type="button" value="Search" class="btn-outline-primary" />
-    </div>
-    <div class="col-sm-2">
-        <input width="100" type="button" value="Reset" class="btn-outline-primary" />
-        @*<a width="100" asp-controller="Schedule" asp-action="Index" formmethod="get"  t="Reset" class="btn btn-sm btn-outline-primary" />*@
-    </div>
-</div>
-@if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
-{
-    <div>
-        <p>Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda </p>
-    </div>
-}
-<table class="table">
-    <thead>
-        <tr>
-            @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
-            {
-                <th>
-                    @Html.DisplayNameFor(model => model.Employee)
-                </th>
-            }
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShiftWork)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CheckInTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Notification)
-            </th>
-            <th>
-                Check in
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody id="scheduleResultInsert">
-        @foreach (var item in Model)
-        {
+    <table class="table">
+        <thead class="table-head">
             <tr>
-                @if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+                @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
                 {
-                    <td>
-                        @Html.DisplayFor(model => item.Employee.Name)  @Html.DisplayFor(model => item.Employee.Surname)
-                    </td>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Employee)
+                    </th>
                 }
-                <td>
-                    @Html.DisplayFor(modelItem => item.Date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ShiftWork)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CheckInTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Notification)
-                </td>
-                <td>
-                    @if (item.CheckInStatus == CheckInStatus.NotRequired)
-                    {
-                        <h6>Not required</h6>
-                    }
-                    else if (item.CheckInStatus == CheckInStatus.Late)
-                    {
-                        <h6>Late</h6>
-                    }
-                    else if (item.CheckInStatus == CheckInStatus.OnTime)
-                    {
-                        <h6>On time</h6>
-                    }
-                    else
-                    {
-                        <a class="btn btn-sm btn-success" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    }
-                </td>
-                <td>
-                    <a class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ShiftWork)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CheckInTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Notification)
+                </th>
+                <th>
+                    Check in
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="scheduleResultInsert" class="table-body">
+            @foreach (var item in Model)
+            {
+                <tr>
                     @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
                     {
-                        <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <td>
+                            @Html.DisplayFor(model => item.Employee.Name)  @Html.DisplayFor(model => item.Employee.Surname)
+                        </td>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-@*@if (!string.IsNullOrEmpty(@TempData["DeleteError"].ToString()))
-{
-    <div>
-        <p style="color:green">Success delete</p>
-    </div>
-}*@
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ShiftWork)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CheckInTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Notification)
+                    </td>
+                    <td>
+                        @if (item.CheckInStatus == CheckInStatus.NotRequired)
+                        {
+                            <h6>Not required</h6>
+                        }
+                        else if (item.CheckInStatus == CheckInStatus.Late)
+                        {
+                            <h6>Late</h6>
+                        }
+                        else if (item.CheckInStatus == CheckInStatus.OnTime)
+                        {
+                            <h6>On time</h6>
+                        }
+                        else
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Edit</a>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-@if (ViewBag.CreateScheduleEnabled != null && ViewBag.CreateScheduleEnabled)
-{
-    <a asp-action="Create">Create schedule</a>
-}
-
-@if (ViewBag.Holidays != null)
-{
-    @foreach (Holiday holiday in ViewBag.Holidays)
+    @if (ViewBag.CreateScheduleEnabled != null && ViewBag.CreateScheduleEnabled)
     {
-        <div class="row">
-            <div class="col-sm-2">
-                @holiday.LocalName
-            </div>
-            <div class="col-sm-10">
-                @holiday.Date.ToString("dd/MM/yyyy")
-            </div>
+        <a asp-action="Create">Create schedule</a>
+    }
+
+    @if (ViewBag.Holidays != null)
+    {
+        <div class="holidays">
+            <h4>
+                Holidays
+            </h4>
+
+            <ul class="list-group">
+                @foreach (Holiday holiday in ViewBag.Holidays)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @holiday.LocalName
+                        <span class="badge badge-info badge-pill">@holiday.Date.ToString("dd.MM")</span>
+                    </li>
+
+                }
+            </ul>
         </div>
 
     }
+
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/index.css" />
 }

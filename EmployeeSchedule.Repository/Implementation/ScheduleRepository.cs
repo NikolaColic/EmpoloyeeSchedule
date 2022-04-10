@@ -50,6 +50,7 @@ namespace EmployeeSchedule.Repository.Implementation
         {
             var employeeSchedule = await _db.Schedule
                 .Include(e => e.Employee)
+                .ThenInclude(e => e.Company)
                 .Where(e => e.Employee.Id == id)
                 .ToListAsync();
 

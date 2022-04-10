@@ -7,9 +7,12 @@ a.navbar-brand {
   word-break: break-all;
 }
 
+.nikolaProvera {
+    background-color: #1b6ec2;
+}
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
 .btn-primary {

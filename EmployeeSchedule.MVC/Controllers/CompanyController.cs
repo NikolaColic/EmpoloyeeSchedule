@@ -26,7 +26,7 @@ namespace EmployeeSchedule.MVC.Controllers
         // GET: CompanyController
         public async Task<ActionResult> Index()
         {
-            var companies = await _apiService.GetHolidays();
+            var companies = await _apiService.GetCompanies();
             return View(_mapper.Map<List<CompanyCreate>>(companies));
         }
 

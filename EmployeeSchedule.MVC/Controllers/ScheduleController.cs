@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.Pdf;
 using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,13 +22,15 @@ namespace EmployeeSchedule.MVC.Controllers
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
         private readonly IWebApiService _apiService;
+        private readonly IPdfService _pdfService;
 
-        public ScheduleController(IScheduleService scheduleService, IEmployeeService employeeService, IMapper mapper, IWebApiService apiService)
+        public ScheduleController(IScheduleService scheduleService, IEmployeeService employeeService, IMapper mapper, IWebApiService apiService, IPdfService pdfService)
         {
             _scheduleService = scheduleService;
             _employeeService = employeeService;
             _mapper = mapper;
             _apiService = apiService;
+            _pdfService = pdfService;
         }
 
 
@@ -72,6 +76,18 @@ namespace EmployeeSchedule.MVC.Controllers
             var schedule = await _apiService.GetScheduleById(id);
             return View(_mapper.Map<ScheduleCreate>(schedule));
         }
+
+        public async Task<FileResult> GeneratePdf(int id)
+        {
+            var schedules = await _scheduleService.GetScheduleForEmployee(id);
+
+            var filePath = await _pdfService.GeneratePdfScheduleForEmployee(schedules.ToList());
+            byte[] bytes = System.IO.File.ReadAllBytes(filePath);
+
+            return File(bytes, "application/octet-stream", Path.GetFileName(filePath));
+        }
+
+
 
         // GET: ScheduleController/Create
         public async Task<ActionResult> Create()

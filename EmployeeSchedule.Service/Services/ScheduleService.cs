@@ -40,7 +40,6 @@ namespace EmployeeSchedule.Service.Services
         {
             var repository = _unitOfWork.Repository as IScheduleRepository;
             var entity = await repository.GetScheduleForEmployee(id);
-            await _unitOfWork.Commit();
             return entity;
         }
 

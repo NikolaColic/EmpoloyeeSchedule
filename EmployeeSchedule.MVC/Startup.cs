@@ -1,6 +1,7 @@
 using EmployeeSchedule.Data;
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
+using EmployeeSchedule.Data.Interface.Pdf;
 using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Implementation;
 using EmployeeSchedule.Infrastructure.UnitOfWork.Interface;
@@ -8,6 +9,7 @@ using EmployeeSchedule.MVC.Extensions;
 using EmployeeSchedule.Repository.Implementation;
 using EmployeeSchedule.Repository.Interface;
 using EmployeeSchedule.Service.Services;
+using EmployeeSchedule.Service.Services.Pdf;
 using EmployeeSchedule.Service.Services.WebApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,7 +44,8 @@ namespace EmployeeSchedule.MVC
             services.AddScoped<IScheduleService, ScheduleService>();
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IGenericService<Company>, CompanyService>();
-            services.AddScoped<IWebApiService, WebApiService> ();
+            services.AddScoped<IWebApiService, WebApiService>();
+            services.AddScoped<IPdfService, PdfService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
