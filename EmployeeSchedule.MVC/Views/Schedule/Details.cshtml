@@ -4,52 +4,55 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Schedule</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Employee)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Employee.Name) @Html.DisplayFor(model => model.Employee.Surname)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ShiftWork)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ShiftWork)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CheckInTime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CheckInTime)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Late)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Late)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Notification)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Notification)
-        </dd>
-    </dl>
+<div class="base">
+    <div class="row">
+        <div class="col-md-6 title">
+            <h1>Schedule</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 title">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.Employee)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.Employee.Name) @Html.DisplayFor(model => model.Employee.Surname)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.Date)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.Date)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.ShiftWork)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.ShiftWork)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.CheckInTime)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.CheckInTime)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.Notification)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.Notification)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayNameFor(model => model.Late)
+                    <span class="badge badge-info badge-pill">@Html.DisplayFor(model => model.Late)</span>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a asp-action="Index" class="btn btn-outline-info">Back to List</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-info">Edit</a>
+            <a class="btn btn-outline-info">@Html.ActionLink("Generate pdf", "GeneratePdf", new { id = Model.Employee.Id })</a>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-    <a>@Html.ActionLink("Generate", "GeneratePdf", new { id = Model.Employee.Id })</a>
-</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/details.css" />
+}

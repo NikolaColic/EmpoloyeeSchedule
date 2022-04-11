@@ -180,14 +180,19 @@ namespace EmployeeSchedule.MVC.Controllers
         public async Task<ActionResult> Login(EmployeeCreate employeeCreate)
         {
             var loginEmployee = await _employeeService.Login(employeeCreate.Email, employeeCreate.Password);
-            if(loginEmployee == null)
+            if (loginEmployee == null)
             {
                 employeeCreate.ValidationMessage = "Employee doesn't exist";
                 return View(employeeCreate);
             }
             Storage.Instance.LoginEmployee = loginEmployee;
             Storage.Instance.IsAdmin = loginEmployee.Administrator ? LoginCurrentRole.Admin : LoginCurrentRole.Employee;
-            return RedirectToAction(nameof(Index));
+
+            if (loginEmployee.Administrator)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index), "Schedule");
         }
 
         public ActionResult Login()
