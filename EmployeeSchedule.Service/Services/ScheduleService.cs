@@ -63,6 +63,22 @@ namespace EmployeeSchedule.Service.Services
             return result;
         }
 
+        public async Task<IEnumerable<Schedule>> Search(string criteria, string criteria2 = null, DateTime date = default)
+        {
+            criteria ??= string.Empty;
+            var schedules = await GetAll();
+
+            schedules = schedules.Where(e => (e.ShiftWork.ToLower().Contains(criteria.ToLower()))
+            && (string.IsNullOrEmpty(criteria2) || e.Employee.Id.ToString() == criteria2) && (date == DateTime.MinValue || e.Date.Date == date.Date)).ToList();
+
+            return schedules;
+        }
+
+        public Task<IEnumerable<Schedule>> Sort(string criteria)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> Update(Schedule entity)
         {
             if (await ScheduleExist(entity))

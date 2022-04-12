@@ -62,7 +62,7 @@ namespace EmployeeSchedule.Repository.Implementation
             var employee = await _db.Employee.SingleOrDefaultAsync(e => e.Id == entity.Employee.Id);
             if (employee == null)
             {
-                throw new NullReferenceException("Employee doesn't exists");
+                throw new Exception("Employee doesn't exists");
             }
 
             entity.Employee = employee;

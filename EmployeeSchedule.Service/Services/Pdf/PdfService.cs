@@ -40,12 +40,12 @@ namespace EmployeeSchedule.Service.Services.Pdf
 
                     pdfDocument.Add(CreateParagraph("Datum i vreme izdavanja izvestaja:", aligment: Element.ALIGN_LEFT, tipParagrafa: 2, spacing: 5));
                     pdfDocument.Add(CreateParagraph(DateTime.Now.ToString("dd / MM / yyyy HH: mm"), aligment: Element.ALIGN_LEFT, tipParagrafa: 3, spacing: 5));
-                    pdfDocument.Add(CreateParagraph("Zapolseni:", aligment: Element.ALIGN_LEFT, tipParagrafa: 2, spacing: 5));
+                    pdfDocument.Add(CreateParagraph("Zaposleni:", aligment: Element.ALIGN_LEFT, tipParagrafa: 2, spacing: 5));
                     pdfDocument.Add(CreateParagraph($"{employee.Name} {employee.Surname} - {employee.Email}", aligment: Element.ALIGN_LEFT, tipParagrafa: 3, spacing: 5));
                     pdfDocument.Add(CreateParagraph($"{employee.Adress} - {employee.Number}", aligment: Element.ALIGN_LEFT, tipParagrafa: 3, spacing: 5));
                     pdfDocument.Add(CreateParagraph($"{employee.Company.Name} - {employee.Possition}", aligment: Element.ALIGN_LEFT, tipParagrafa: 3, spacing: 5));
 
-                    pdfDocument.Add(CreateParagraph("Fakture:\n", aligment: Element.ALIGN_LEFT, tipParagrafa: 5, spacingBefore: 10));
+                    pdfDocument.Add(CreateParagraph("Raspored:\n", aligment: Element.ALIGN_LEFT, tipParagrafa: 5, spacingBefore: 10));
 
                     if (schedules != null && schedules.Any())
                     {
@@ -116,7 +116,7 @@ namespace EmployeeSchedule.Service.Services.Pdf
             }
             else
             {
-                paragraph.Font = FontFactory.GetFont("Times New Roman", 25, Font.BOLD, BaseColor.RED);
+                paragraph.Font = FontFactory.GetFont("Times New Roman", 25, Font.BOLD, BaseColor.DARK_GRAY);
             }
             paragraph.Add(tekst);
             return paragraph;

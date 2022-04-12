@@ -10,36 +10,28 @@ namespace EmployeeSchedule.MVC.Models.ViewModel
 {
     public class ScheduleViewModel : Schedule
     {
-        public List<SelectListItem> EmployeesSelectList { get; set; }
         public CheckInStatus CheckInStatus { get; set; }
-        public List<Holiday> Holidays { get; set; }
         public ScheduleViewModel()
         {
-            if(Date.Date < DateTime.Now.Date)
+
+            if ((CheckInTime == DateTime.MinValue))
             {
-                CheckInStatus = CheckInStatus.NotRequired;
+                if(Date.Date < DateTime.Now.Date)
+                {
+                    CheckInStatus = CheckInStatus.NotRequired;
+                    return;
+                }
+
+                CheckInStatus = Date > DateTime.Now ? CheckInStatus.Late : CheckInStatus.CheckIn;
                 return;
             }
-
-            if ((CheckInTime == DateTime.MinValue) && (Date > DateTime.Now))
+            else
             {
-                CheckInStatus = Date > DateTime.Now ? CheckInStatus.CheckIn : CheckInStatus.Late;
-                return;
+                CheckInStatus = ShiftWork == "Prva" && CheckInTime.Hour < 8 ? CheckInStatus.OnTime 
+                : ShiftWork == "Druga" && CheckInTime.Hour < 15 ? CheckInStatus.OnTime : CheckInStatus.Late;
             }
 
-            CheckInStatus = ShiftWork == "Prva" && CheckInTime.Hour < 8 ? CheckInStatus.OnTime 
-            : ShiftWork == "Druga" && CheckInTime.Hour < 15 ? CheckInStatus.OnTime : CheckInStatus.Late;
         }
-       
-        public void EmployeeSelectList(IEnumerable<Employee> employees)
-        {
-            EmployeesSelectList = employees.Select(e => new SelectListItem
-            {
-                Value = e.Id.ToString(),
-                Text = e.Name + e.Surname
-            }).ToList();
-        }
-
     }
 
     public enum CheckInStatus

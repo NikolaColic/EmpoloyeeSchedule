@@ -29,6 +29,13 @@
         </div>
     </div>
     <div class="row buttons-index">
+
+        @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin || (ViewBag.CreateScheduleEnabled != null && ViewBag.CreateScheduleEnabled))
+        {
+            <div class="col-sm-4">
+                <a class="btn btn-outline-info" asp-action="Create">Create schedule</a>
+            </div>
+        }
         <div class="col-sm-4">
             <input id="scheduleSearch" width="100" type="button" value="Search" class="btn btn-outline-info" />
         </div>
@@ -38,7 +45,7 @@
     </div>
     @if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
     {
-        <div>
+        <div class="alert alert-warning" role="alert">
             <p>Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda </p>
         </div>
     }
@@ -106,7 +113,14 @@
                         }
                         else
                         {
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Edit</a>
+                            @if (Storage.Instance.IsAdmin == LoginCurrentRole.Employee)
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Check in</a>
+                            }
+                            else
+                            {
+                                <h6>Wait check in</h6>
+                            }
                         }
                     </td>
                     <td>
@@ -122,10 +136,6 @@
         </tbody>
     </table>
 
-    @if (ViewBag.CreateScheduleEnabled != null && ViewBag.CreateScheduleEnabled)
-    {
-        <a asp-action="Create">Create schedule</a>
-    }
 
     @if (ViewBag.Holidays != null)
     {
@@ -133,7 +143,6 @@
             <h4>
                 Holidays
             </h4>
-
             <ul class="list-group">
                 @foreach (Holiday holiday in ViewBag.Holidays)
                 {

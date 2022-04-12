@@ -1,4 +1,5 @@
 ﻿@model EmployeeSchedule.MVC.Models.Create.ScheduleCreate
+@using EmployeeSchedule.MVC.Session
 
 @{
     ViewData["Title"] = "Details";
@@ -46,8 +47,11 @@
         <div class="col-md-6">
             <a asp-action="Index" class="btn btn-outline-info">Back to List</a>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-info">Edit</a>
-            <a class="btn btn-outline-info">@Html.ActionLink("Generate pdf", "GeneratePdf", new { id = Model.Employee.Id })</a>
-        </div>
+            @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
+            {
+                <a asp-action="GeneratePdf" asp-route-id="@Model.Employee.Id" class="btn btn-outline-info">Generate pdf</a>
+            }
+            </div>
         <div class="col-md-6">
         </div>
     </div>

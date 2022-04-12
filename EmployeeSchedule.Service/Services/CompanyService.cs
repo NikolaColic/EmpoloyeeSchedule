@@ -32,8 +32,9 @@ namespace EmployeeSchedule.Service.Services
 
         public async Task<Company> GetById(int id)
         {
-            var entity = await _unitOfWork.Repository.GetById(id);
-            return entity;
+                var entity = await _unitOfWork.Repository.GetById(id);
+                return entity;
+           
         }
 
         public async Task<bool> Insert(Company entity)
@@ -46,6 +47,16 @@ namespace EmployeeSchedule.Service.Services
             var result = await _unitOfWork.Repository.Insert(entity);
             await _unitOfWork.Commit();
             return result;
+        }
+
+        public Task<IEnumerable<Company>> Search(string criteria)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Company>> Sort(string criteria)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> Update(Company entity)

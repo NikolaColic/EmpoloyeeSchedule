@@ -36,7 +36,7 @@ namespace EmployeeSchedule.Repository.Implementation
 
             if(company == null)
             {
-                throw new NullReferenceException("Company doesn't exist");
+                throw new Exception("Company doesn't exist");
             }
 
             return company;

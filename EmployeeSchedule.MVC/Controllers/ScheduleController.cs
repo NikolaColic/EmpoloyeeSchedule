@@ -3,6 +3,7 @@ using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.Data.Interface.Pdf;
 using EmployeeSchedule.Data.Interface.WebApi;
+using EmployeeSchedule.MVC.Extensions;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
 using EmployeeSchedule.MVC.Session;
@@ -48,8 +49,10 @@ namespace EmployeeSchedule.MVC.Controllers
                 schedules = await _scheduleService.GetScheduleForEmployee(Storage.Instance.LoginEmployee.Id);
             }
             schedules.OrderBy(e => e.Date);
-            var employees = await _employeeService.GetAll();
+            var schedulesViewModel = _mapper.Map<List<ScheduleViewModel>>(schedules);
+            schedulesViewModel.ForEach(e => e.SetCheckInStatus());
 
+            var employees = await _employeeService.GetAll();
             ViewBag.EmployeeSelectList = employees.Select(e => new SelectListItem
             {
                 Value = e.Id.ToString(),
@@ -67,7 +70,7 @@ namespace EmployeeSchedule.MVC.Controllers
                 ViewBag.CreateScheduleEnabled = !schedules.Any(e => e.Date.Date == DateTime.Now.Date && e.Employee.Id == Storage.Instance.LoginEmployee.Id);
             }
 
-            return View(_mapper.Map<List<ScheduleViewModel>>(schedules));
+            return View(schedulesViewModel);
         }
 
         // GET: ScheduleController/Details/5
@@ -81,7 +84,7 @@ namespace EmployeeSchedule.MVC.Controllers
         {
             var schedules = await _scheduleService.GetScheduleForEmployee(id);
 
-            var filePath = await _pdfService.GeneratePdfScheduleForEmployee(schedules.ToList());
+            var filePath = await _pdfService.GeneratePdfScheduleForEmployee(schedules.Where(e => e.Date > DateTime.Now.AddMonths(-1)).ToList());
             byte[] bytes = System.IO.File.ReadAllBytes(filePath);
 
             return File(bytes, "application/octet-stream", Path.GetFileName(filePath));
@@ -212,14 +215,8 @@ namespace EmployeeSchedule.MVC.Controllers
 
         public async Task<ActionResult> Search(string text, string employeeId, DateTime date)
         {
-            text ??= string.Empty;
-            var schedules = await _scheduleService.GetAll();
-
-            schedules = schedules.Where(e => (e.Notification.ToLower().Contains(text.ToLower()) || e.ShiftWork.ToLower().Contains(text.ToLower())) 
-            && (string.IsNullOrEmpty(employeeId) || e.Employee.Id.ToString() == employeeId) && (date == DateTime.MinValue || e.Date.Date == date.Date)).ToList();
-
+            var schedules = await _scheduleService.Search(text,employeeId,date);
             return PartialView(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }
-
     }
 }

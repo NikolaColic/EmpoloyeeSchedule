@@ -67,8 +67,8 @@
                 </div>
                 @if (!string.IsNullOrEmpty(@Model.ValidationMessage))
                 {
-                    <div>
-                        <p style="color:green">@Model.ValidationMessage</p>
+                    <div class="alert alert-info" role="alert">
+                        @Model.ValidationMessage
                     </div>
                 }
             </form>

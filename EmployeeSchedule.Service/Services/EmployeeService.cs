@@ -54,6 +54,43 @@ namespace EmployeeSchedule.Service.Services
             return loginEmployee;
         }
 
+        public async Task<IEnumerable<Employee>> Search(string criteria)
+        {
+            var employees = await GetAll();
+
+            employees = employees.Where(e => e.Name.ToLower().Contains(criteria.ToLower()) || e.Surname.ToLower().Contains(criteria.ToLower())
+            || e.Adress.ToLower().Contains(criteria.ToLower()) || e.Number.ToLower().Contains(criteria.ToLower()) || e.Email.ToLower().Contains(criteria.ToLower())
+            || e.Possition.ToLower().Contains(criteria.ToLower())).ToList();
+
+            return employees;
+        }
+
+        public async Task<IEnumerable<Employee>> Sort(string criteria, string criteria2 = null, DateTime date = default)
+        {
+            var employees = await GetAll();
+
+            switch (criteria)
+            {
+                case "Name":
+                    employees = employees.OrderBy(e => e.Name);
+                    break;
+                case "Surname":
+                    employees = employees.OrderBy(e => e.Surname);
+                    break;
+                case "Email":
+                    employees = employees.OrderBy(e => e.Email);
+                    break;
+                case "Adress":
+                    employees = employees.OrderBy(e => e.Adress);
+                    break;
+                case "Possition":
+                    employees = employees.OrderBy(e => e.Possition);
+                    break;
+            }
+
+            return employees;
+        }
+
         public async Task<bool> Update(Employee entity)
         {
             if (await EmployeeExist(entity))

@@ -39,9 +39,9 @@ namespace EmployeeSchedule.API.Controllers
                 var result = await _service.GetById(id);
                 return Ok(result);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex.Message);
             }
         }
 

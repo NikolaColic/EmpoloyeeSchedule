@@ -8,5 +8,6 @@ namespace EmployeeSchedule.MVC.Models.ViewModel
 {
     public class EmployeeViewModel : Employee
     {
+
     }
 }
