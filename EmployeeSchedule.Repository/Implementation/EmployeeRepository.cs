@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Repository.Implementation
@@ -38,8 +37,6 @@ namespace EmployeeSchedule.Repository.Implementation
 
             return employees;
         }
-
-
 
         public async Task<Employee> GetById(int id)
         {

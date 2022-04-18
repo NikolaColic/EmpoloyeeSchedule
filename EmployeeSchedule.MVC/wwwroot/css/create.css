@@ -1,15 +1,4 @@
-﻿
-html, body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    height: 100vh;
-    width: 100vw;
-}
-
-.base {
+﻿.base {
     background-color: #474B4F;
     color: #86C232;
     padding-left: 30%;

@@ -48,7 +48,9 @@ namespace EmployeeSchedule.MVC.Controllers
             {
                 schedules = await _scheduleService.GetScheduleForEmployee(Storage.Instance.LoginEmployee.Id);
             }
+
             schedules.OrderBy(e => e.Date);
+
             var schedulesViewModel = _mapper.Map<List<ScheduleViewModel>>(schedules);
             schedulesViewModel.ForEach(e => e.SetCheckInStatus());
 

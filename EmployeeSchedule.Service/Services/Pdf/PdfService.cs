@@ -63,8 +63,9 @@ namespace EmployeeSchedule.Service.Services.Pdf
                             table.AddCell(CreateCellTable(schedule.ShiftWork, true));
                             table.AddCell(CreateCellTable(schedule.CheckInTime.ToString("HH:mm"), true));
                             table.AddCell(CreateCellTable(schedule.Notification, true));
-                            pdfDocument.Add(table);
                         }
+
+                        pdfDocument.Add(table);
 
                     }
                    

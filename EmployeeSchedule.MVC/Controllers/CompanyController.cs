@@ -3,11 +3,9 @@ using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.Data.Interface;
 using EmployeeSchedule.Data.Interface.WebApi;
 using EmployeeSchedule.MVC.Models.Create;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace EmployeeSchedule.MVC.Controllers

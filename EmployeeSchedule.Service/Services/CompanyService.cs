@@ -48,8 +48,7 @@ namespace EmployeeSchedule.Service.Services
             await _unitOfWork.Commit();
             return result;
         }
-
-        public Task<IEnumerable<Company>> Search(string criteria)
+        public Task<IEnumerable<Company>> Search(string criteria, string criteria2 = null, DateTime date = default)
         {
             throw new NotImplementedException();
         }

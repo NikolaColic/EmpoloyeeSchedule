@@ -19,6 +19,11 @@
     margin-top: 10%;
 }
 
+.base-helper {
+    height: 400px;
+    background-color: #474B4F;
+}
+
 .row{
 
 }

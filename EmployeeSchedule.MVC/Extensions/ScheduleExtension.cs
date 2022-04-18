@@ -1,8 +1,5 @@
 ﻿using EmployeeSchedule.MVC.Models.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeSchedule.MVC.Extensions
 {
@@ -10,6 +7,18 @@ namespace EmployeeSchedule.MVC.Extensions
     {
         public static void SetCheckInStatus(this ScheduleViewModel schedule)
         {
+            if (string.IsNullOrEmpty(schedule.ShiftWork))
+            {
+                schedule.CheckInStatus = CheckInStatus.WaitingSchedule;
+                return;
+            }
+
+            if (schedule.ShiftWork == "Slobodan dan")
+            {
+                schedule.CheckInStatus = CheckInStatus.FreeDay;
+                return;
+            }
+
             if ((schedule.CheckInTime == DateTime.MinValue))
             {
                 if (schedule.Date.Date < DateTime.Now.Date)

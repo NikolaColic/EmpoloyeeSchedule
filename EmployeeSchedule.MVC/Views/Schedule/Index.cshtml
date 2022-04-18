@@ -5,7 +5,7 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Schedules";
 }
 
 @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
@@ -40,13 +40,13 @@
             <input id="scheduleSearch" width="100" type="button" value="Search" class="btn btn-outline-info" />
         </div>
         <div class="col-sm-4">
-            <input width="100" type="button" value="Reset" class="btn btn-outline-info" />
+            <a class="btn btn-outline-info" asp-action="Index">Reset</a>
         </div>
     </div>
     @if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
     {
-        <div class="alert alert-warning" role="alert">
-            <p>Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda </p>
+        <div class="alert alert-warning" role="alert" style="margin-top:2%">
+           Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda 
         </div>
     }
     <table class="table">
@@ -110,6 +110,14 @@
                         else if (item.CheckInStatus == CheckInStatus.OnTime)
                         {
                             <h6>On time</h6>
+                        }
+                        else if (item.CheckInStatus == CheckInStatus.FreeDay)
+                        {
+                            <h6>Free day</h6>
+                        }
+                        else if (item.CheckInStatus == CheckInStatus.WaitingSchedule)
+                        {
+                            <h6>Waiting schedule</h6>
                         }
                         else
                         {

@@ -1,10 +1,5 @@
 ﻿using EmployeeSchedule.Data.Entities;
-using EmployeeSchedule.Data.Entities.ApiEntities;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeSchedule.MVC.Models.ViewModel
 {
@@ -36,6 +31,6 @@ namespace EmployeeSchedule.MVC.Models.ViewModel
 
     public enum CheckInStatus
     {
-        Late, OnTime, CheckIn, NotRequired
+        Late, OnTime, CheckIn, NotRequired, FreeDay, WaitingSchedule
     }
 }

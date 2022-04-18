@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeSchedule.Service.Services
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService : IEmployeeService 
     {
         private readonly IUnitOfWork<Employee> _unitOfWork;
         public EmployeeService(IUnitOfWork<Employee> unitOfWork)
@@ -54,7 +54,7 @@ namespace EmployeeSchedule.Service.Services
             return loginEmployee;
         }
 
-        public async Task<IEnumerable<Employee>> Search(string criteria)
+        public async Task<IEnumerable<Employee>> Search(string criteria, string criteria2 = null, DateTime date = default)
         {
             var employees = await GetAll();
 
@@ -65,7 +65,7 @@ namespace EmployeeSchedule.Service.Services
             return employees;
         }
 
-        public async Task<IEnumerable<Employee>> Sort(string criteria, string criteria2 = null, DateTime date = default)
+        public async Task<IEnumerable<Employee>> Sort(string criteria)
         {
             var employees = await GetAll();
 

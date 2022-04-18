@@ -2,10 +2,6 @@
 using EmployeeSchedule.Data.Entities;
 using EmployeeSchedule.MVC.Models.Create;
 using EmployeeSchedule.MVC.Models.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeSchedule.MVC.Helper
 {
