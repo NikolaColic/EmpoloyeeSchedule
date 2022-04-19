@@ -26,6 +26,7 @@ namespace EmployeeSchedule.Service.Services
         public async Task<IEnumerable<Employee>> GetAll()
         {
             var entities = await _unitOfWork.Repository.GetAll();
+            Storage.Storage.Instance.Employees = entities.ToList();
             return entities;
         }
 
@@ -56,38 +57,44 @@ namespace EmployeeSchedule.Service.Services
 
         public async Task<IEnumerable<Employee>> Search(string criteria, string criteria2 = null, DateTime date = default)
         {
-            var employees = await GetAll();
+            var employees = (await GetAll()).ToList();
 
             employees = employees.Where(e => e.Name.ToLower().Contains(criteria.ToLower()) || e.Surname.ToLower().Contains(criteria.ToLower())
             || e.Adress.ToLower().Contains(criteria.ToLower()) || e.Number.ToLower().Contains(criteria.ToLower()) || e.Email.ToLower().Contains(criteria.ToLower())
             || e.Possition.ToLower().Contains(criteria.ToLower())).ToList();
 
+            Storage.Storage.Instance.Employees = employees;
             return employees;
         }
 
         public async Task<IEnumerable<Employee>> Sort(string criteria)
         {
-            var employees = await GetAll();
+            var employees = Storage.Storage.Instance.Employees;
+            if (employees == null || !employees.Any())
+            {
+                employees = (await GetAll()).ToList();
+            }
 
             switch (criteria)
             {
                 case "Name":
-                    employees = employees.OrderBy(e => e.Name);
+                    employees = employees.OrderBy(e => e.Name).ToList();
                     break;
                 case "Surname":
-                    employees = employees.OrderBy(e => e.Surname);
+                    employees = employees.OrderBy(e => e.Surname).ToList();
                     break;
                 case "Email":
-                    employees = employees.OrderBy(e => e.Email);
+                    employees = employees.OrderBy(e => e.Email).ToList();
                     break;
                 case "Adress":
-                    employees = employees.OrderBy(e => e.Adress);
+                    employees = employees.OrderBy(e => e.Adress).ToList();
                     break;
                 case "Possition":
-                    employees = employees.OrderBy(e => e.Possition);
+                    employees = employees.OrderBy(e => e.Possition).ToList();
                     break;
             }
 
+            Storage.Storage.Instance.Employees = employees;
             return employees;
         }
 

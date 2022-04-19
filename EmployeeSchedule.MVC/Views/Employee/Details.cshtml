@@ -56,7 +56,7 @@
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-info">Edit</a>
             @if (Storage.Instance.IsAdmin == LoginCurrentRole.Admin)
             {
-                <a asp-action="GeneratePdf" asp-route-id="@Model.Id" class="btn btn-outline-info">Generate pdf</a>
+                <a asp-controller="Schedule" asp-action="GeneratePdf" asp-route-id="@Model.Id" class="btn btn-outline-info">Generate pdf</a>
             }
         </div>
         <div class="col-md-6">

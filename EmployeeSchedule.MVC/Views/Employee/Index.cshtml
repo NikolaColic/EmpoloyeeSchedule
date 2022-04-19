@@ -36,6 +36,22 @@
             <input id="employeeSort" type="button" width="100" value="Sort" class="btn btn-outline-info" />
         </div>
     </div>
+    @if (TempData["DeleteError"] != null)
+    {
+        @if ((bool)TempData["DeleteError"])
+        {
+            <div class="alert alert-warning" role="alert" style="margin-top:1%; width:50%">
+                Delete error
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert" style="margin-top:1%; width:50%">
+                Success delete
+            </div>
+        }
+    }
+       
     <div class="table-responsive table-base">
         <table class="table">
             <thead class="table-head">
@@ -102,8 +118,8 @@
                             @Html.DisplayFor(modelItem => item.CityName)
                         </th>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Edit</a> 
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-success">Details</a> 
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-light">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-success">Details</a>
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
                         </td>
                     </tr>

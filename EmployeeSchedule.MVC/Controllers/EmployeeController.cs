@@ -128,18 +128,13 @@ namespace EmployeeSchedule.MVC.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _apiService.DeleteEmployee(id);
-
-            if(!result)
-            {
-                TempData["DeleteError"] = true;
-            }
-
+            TempData["DeleteError"] = !result;
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<ActionResult> Search(string criteria)
         {
-            var employees = await _employeeService.Search(criteria);
+            var employees = await _employeeService.Search(criteria ?? string.Empty);
             return PartialView(_mapper.Map<List<EmployeeViewModel>>(employees));
         }
 

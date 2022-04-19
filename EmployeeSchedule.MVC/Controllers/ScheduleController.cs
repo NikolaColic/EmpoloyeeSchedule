@@ -206,18 +206,13 @@ namespace EmployeeSchedule.MVC.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             var result = await _scheduleService.Delete(id);
-
-            if (!result)
-            {
-                TempData["DeleteError"] = true;
-            }
-
+            TempData["DeleteError"] = !result;
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<ActionResult> Search(string text, string employeeId, DateTime date)
         {
-            var schedules = await _scheduleService.Search(text,employeeId,date);
+            var schedules = await _scheduleService.Search(text ?? string.Empty,employeeId,date);
             return PartialView(_mapper.Map<List<ScheduleViewModel>>(schedules));
         }
     }

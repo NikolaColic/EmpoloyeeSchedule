@@ -45,10 +45,27 @@
     </div>
     @if (ViewBag.NumberOfRequests != null && ViewBag.NumberOfRequests > 0)
     {
-        <div class="alert alert-warning" role="alert" style="margin-top:2%">
-           Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda 
+        <div class="alert alert-warning" role="alert" style="margin-top:1%;width:50%">
+            Trenutno imate @ViewBag.NumberOfRequests zahteva za kreiranjem rasporeda
         </div>
     }
+
+    @if (TempData["DeleteError"] != null)
+    {
+        @if ((bool)TempData["DeleteError"])
+        {
+            <div class="alert alert-warning" role="alert" style="margin-top:1%; width:50%">
+                Delete error
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert" style="margin-top:1%; width:50%">
+                Success delete
+            </div>
+        }
+    }
+
     <table class="table">
         <thead class="table-head">
             <tr>
